@@ -15,8 +15,8 @@ function milkFaceScene () {
 
 			var loader = new THREE.ObjectLoader();
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setClearColor( 0x000000 );
+			renderer = new THREE.WebGLRenderer( { antialias: true,  alpha: true  } );
+			renderer.setClearColor( 0xffffff, 0);
 			renderer.setPixelRatio( window.devicePixelRatio );
 
 			if ( json.project.shadows ) {
@@ -32,6 +32,8 @@ function milkFaceScene () {
 			addEnvMap( milkFaceObject);
 
     		controls = new THREE.OrbitControls(camera, renderer.domElement);
+			controls.enableZoom = false;
+			controls.enablePan = false;
 		};
 
 		function setCamera ( value ) {
@@ -71,6 +73,15 @@ function milkFaceScene () {
 			rotateObject (event, milkFaceObject, 0.05, 0.01);
 		}
 
+		function stopRotate (rotateEvent, stopEvent) {
+			window.removeEventListener( 'mousemove', rotateEvent);
+			window.removeEventListener('mousedown', stopEvent);
+		}
+
+		function stopRotateMilkFace () {
+			stopRotate (rotateMilkFace, stopRotateMilkFace);
+		}
+
 		function setSize ( newWidth, newHeight ) {
 			width = newWidth;
 			height = newHeight;
@@ -92,16 +103,18 @@ function milkFaceScene () {
 		}
 
 		this.play = function () {
-			setSizeToWindow ()
+			setSizeToWindow ();
 
 			request = requestAnimationFrame( animate );
 			window.addEventListener( 'resize', setSizeToWindow);
 			window.addEventListener( 'mousemove', rotateMilkFace);
+			window.addEventListener("mousedown", stopRotateMilkFace);
 		};
 
 		this.stop = function () {
 			cancelAnimationFrame( request );
 			window.removeEventListener( 'resize', setSizeToWindow);
 			window.removeEventListener( 'mousemove', rotateMilkFace);
+			window.removeEventListener('mousedown', stopRotateMilkFace);
 		}
 }
