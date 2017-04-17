@@ -1,6 +1,6 @@
 function milkFacePlayer () {
 
-    this.loadPlayer = function () {
+    this.loadPlayer = function (parent) {
         var loader = new THREE.FileLoader();
         loader.load( 'app.json', function ( text ) {
 
@@ -8,7 +8,7 @@ function milkFacePlayer () {
             player.load( JSON.parse( text ) );
             player.play();
 
-            document.body.appendChild( player.dom );
+            parent.append( player.dom );
         });
     }
 
@@ -21,6 +21,4 @@ function milkFacePlayer () {
     }
 
     var player;
-    this.loadPlayer();
-
 }

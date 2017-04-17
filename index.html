@@ -5,24 +5,54 @@
 		<meta charset="utf-8">
 		<meta name="generator" content="Three.js Editor">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				font-family: Helvetica, Arial, sans-serif;
-				font-size: 12px;
-				background-color: #000;
-				margin: 0px;
-				overflow: hidden;
-			}
-		</style>
-	</head>
-	<body>
+
+		<!--fullpage.js -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/jquery.fullPage.css" />
+		<script type="text/javascript" src="js/jquery.fullPage.js"></script>
+
+		<!--three.js -->
 		<script src="js/three.min.js"></script>
 		<script src="js/app.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/milkFace.js"></script>
 
-		<script>
-			var milkFace = new milkFacePlayer();
+		<link rel="stylesheet" type="text/css" href="css/MainStyleSheet.css" />
+
+		<script type="text/javascript">
+
+			$(document).ready(function() {
+				$('#fullpage').fullpage({
+					navigation: true,
+					navigationPosition: 'right',
+					navigationTooltips: ['Milk Face', 'Video', 'Text'],
+					continuousVertical: true
+				});
+
+				var parent =  $("#section0").children(".fp-tableCell");
+
+				var milkFace = new milkFacePlayer();
+				milkFace.loadPlayer(parent);
+			});
 		</script>
+
+	</head>
+	<body>
+
+		<div id="fullpage">
+
+			<div class="section " id="section0">
+			</div>
+
+			<div class="section" id="section1">
+			</div>
+
+			<div class="section" id="section2">
+			</div>
+
+		</div>
+
 	</body>
 </html>
