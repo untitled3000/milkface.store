@@ -1,11 +1,12 @@
 
-function milkFacePlayer () {
+function milkFaceScene () {
 
 		var loader;
 		var camera, scene, renderer;
 		var width, height;
-		var milkFaceObject;
 		var controls;
+		var mouseX, mouseY;
+		var milkFaceObject;
 
 		this.dom = document.createElement( 'div' );
 
@@ -24,30 +25,30 @@ function milkFacePlayer () {
 
 			this.dom.appendChild( renderer.domElement );
 
-			this.setScene( loader.parse( json.scene ) );
-			this.setCamera( loader.parse( json.camera ) );
+			setScene( loader.parse( json.scene ) );
+			setCamera( loader.parse( json.camera ) );
 
-			this.setMilkFace(scene.children[0].children[0]);
-			this.addEnvMap(milkFaceObject);
+			setMilkFace(scene.children[0].children[0]);
+			addEnvMap( milkFaceObject);
 
     		controls = new THREE.OrbitControls(camera, renderer.domElement);
 		};
 
-		this.setCamera = function ( value ) {
+		function setCamera ( value ) {
 			camera = value;
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
 		};
 
-		this.setScene = function ( value ) {
+		function setScene ( value ) {
 			scene = value;
 		};
 
-		this.setMilkFace = function ( value ) {
+		function setMilkFace ( value ) {
 			milkFaceObject = value;
 		}
 
-		this.addEnvMap = function ( object ){
+		function addEnvMap ( object ){
 			var enviorment = new THREE.CubeTextureLoader()
 				.setPath( 'textures/cube_map/' )
 				.load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
@@ -55,7 +56,22 @@ function milkFacePlayer () {
 			object.material.envMap = enviorment;
 		};
 
-		this.setSize = function ( newWidth, newHeight ) {
+		function rotateObject ( event, object, xMag, yMag ) {
+			mouseX = event.clientX;
+			mouseY = event.clientY;
+
+			var xNorm = (mouseX-(width/2)) / (width/2);
+			var yNorm = (mouseY-(height/2)) / (height/2);
+
+			object.rotation.y = xNorm * xMag;
+			object.rotation.x = yNorm * yMag;
+		}
+
+		function rotateMilkFace ( event ) {
+			rotateObject (event, milkFaceObject, 0.05, 0.01);
+		}
+
+		function setSize ( newWidth, newHeight ) {
 			width = newWidth;
 			height = newHeight;
 
@@ -65,12 +81,27 @@ function milkFacePlayer () {
 			renderer.setSize( width, height );
 		};
 
+		function setSizeToWindow () {
+			setSize( window.innerWidth, window.innerHeight );
+		}
+
+		var request;
 		function animate() {
-			requestAnimationFrame( animate );
+			request = requestAnimationFrame( animate );
 			renderer.render( scene, camera );
 		}
 
 		this.play = function () {
-			requestAnimationFrame( animate );
+			setSizeToWindow ()
+
+			request = requestAnimationFrame( animate );
+			window.addEventListener( 'resize', setSizeToWindow);
+			window.addEventListener( 'mousemove', rotateMilkFace);
 		};
+
+		this.stop = function () {
+			cancelAnimationFrame( request );
+			window.removeEventListener( 'resize', setSizeToWindow);
+			window.removeEventListener( 'mousemove', rotateMilkFace);
+		}
 }

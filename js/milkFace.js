@@ -1,16 +1,26 @@
-function loadThreeJS() {
-    var loader = new THREE.FileLoader();
-    loader.load( 'app.json', function ( text ) {
+function milkFacePlayer () {
 
-        var player = new milkFacePlayer();
-        player.load( JSON.parse( text ) );
-        player.setSize( window.innerWidth, window.innerHeight );
-        player.play();
+    this.loadPlayer = function () {
+        var loader = new THREE.FileLoader();
+        loader.load( 'app.json', function ( text ) {
 
-        document.body.appendChild( player.dom );
+            player = new milkFaceScene();
+            player.load( JSON.parse( text ) );
+            player.play();
 
-        window.addEventListener( 'resize', function () {
-            player.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( player.dom );
         });
-    });
+    }
+
+    this.play = function (){
+        player.play();
+    }
+
+    this.stop = function (){
+        player.stop();
+    }
+
+    var player;
+    this.loadPlayer();
+
 }
