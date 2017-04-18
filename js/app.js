@@ -1,335 +1,120 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
 
-var APP = {
+function milkFaceScene () {
 
-	Player: function () {
-
-		var loader = new THREE.ObjectLoader();
+		var loader;
 		var camera, scene, renderer;
-
-		var controls, effect, cameraVR, isVR;
-
-		var events = {};
+		var width, height;
+		var controls;
+		var mouseX, mouseY;
+		var milkFaceObject;
 
 		this.dom = document.createElement( 'div' );
 
-		this.width = 500;
-		this.height = 500;
-
 		this.load = function ( json ) {
-
 			console.log (json);
 
-			isVR = json.project.vr;
+			var loader = new THREE.ObjectLoader();
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setClearColor( 0x000000 );
+			renderer = new THREE.WebGLRenderer( { antialias: true,  alpha: true  } );
+			renderer.setClearColor( 0xffffff, 0);
 			renderer.setPixelRatio( window.devicePixelRatio );
 
-			if ( json.project.gammaInput ) renderer.gammaInput = true;
-			if ( json.project.gammaOutput ) renderer.gammaOutput = true;
-
 			if ( json.project.shadows ) {
-
 				renderer.shadowMap.enabled = true;
-				// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
 			}
 
 			this.dom.appendChild( renderer.domElement );
 
-			this.setScene( loader.parse( json.scene ) );
-			this.setCamera( loader.parse( json.camera ) );
-			this.addEnvMap();
+			setScene( loader.parse( json.scene ) );
+			setCamera( loader.parse( json.camera ) );
 
-			events = {
-				init: [],
-				start: [],
-				stop: [],
-				keydown: [],
-				keyup: [],
-				mousedown: [],
-				mouseup: [],
-				mousemove: [],
-				touchstart: [],
-				touchend: [],
-				touchmove: [],
-				update: []
-			};
+			setMilkFace(scene.children[0].children[0]);
+			addEnvMap( milkFaceObject);
 
-			var scriptWrapParams = 'player,renderer,scene,camera';
-			var scriptWrapResultObj = {};
-
-			for ( var eventKey in events ) {
-
-				scriptWrapParams += ',' + eventKey;
-				scriptWrapResultObj[ eventKey ] = eventKey;
-
-			}
-
-			var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
-
-			for ( var uuid in json.scripts ) {
-
-				var object = scene.getObjectByProperty( 'uuid', uuid, true );
-
-				if ( object === undefined ) {
-
-					console.warn( 'APP.Player: Script without object.', uuid );
-					continue;
-
-				}
-
-				var scripts = json.scripts[ uuid ];
-
-				for ( var i = 0; i < scripts.length; i ++ ) {
-
-					var script = scripts[ i ];
-
-					var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
-
-					for ( var name in functions ) {
-
-						if ( functions[ name ] === undefined ) continue;
-
-						if ( events[ name ] === undefined ) {
-
-							console.warn( 'APP.Player: Event type not supported (', name, ')' );
-							continue;
-
-						}
-
-						events[ name ].push( functions[ name ].bind( object ) );
-
-					}
-
-				}
-
-			}
-
-			dispatch( events.init, arguments );
-
-		};
-
-		this.setCamera = function ( value ) {
-
-			camera = value;
-			camera.aspect = this.width / this.height;
-			camera.updateProjectionMatrix();
-
-			// Add OrbitControls so that we can pan around with the mouse.
     		controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-			if ( isVR === true ) {
-
-				cameraVR = new THREE.PerspectiveCamera();
-				cameraVR.projectionMatrix = camera.projectionMatrix;
-				camera.add( cameraVR );
-
-				controls = new THREE.VRControls( cameraVR );
-				effect = new THREE.VREffect( renderer );
-
-				if ( WEBVR.isAvailable() === true ) {
-
-					this.dom.appendChild( WEBVR.getButton( effect ) );
-
-				}
-
-				if ( WEBVR.isLatestAvailable() === false ) {
-
-					this.dom.appendChild( WEBVR.getMessage() );
-
-				}
-
-			}
-
+			controls.enableZoom = false;
+			controls.enablePan = false;
 		};
 
-		this.setScene = function ( value ) {
+		function setCamera ( value ) {
+			camera = value;
+			camera.aspect = width / height;
+			camera.updateProjectionMatrix();
+		};
+
+		function setScene ( value ) {
 			scene = value;
-			};
+		};
 
-		this.addEnvMap = function (){
+		function setMilkFace ( value ) {
+			milkFaceObject = value;
+		}
 
+		function addEnvMap ( object ){
 			var enviorment = new THREE.CubeTextureLoader()
 				.setPath( 'textures/cube_map/' )
 				.load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
 
-			// scene.background = new THREE.CubeTextureLoader()
-			// 	.setPath( 'textures/cube_map/' )
-			// 	.load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
-
-			scene.children[0].children[0].material.envMap = enviorment;
-			// scene.children[0].children[0].material.roughness = 0;
-			// scene.children[0].children[0].material.metalness = 1;
+			object.material.envMap = enviorment;
 		};
 
-		this.setSize = function ( width, height ) {
+		function rotateObject ( event, object, xMag, yMag ) {
+			mouseX = event.clientX;
+			mouseY = event.clientY;
 
-			this.width = width;
-			this.height = height;
+			var xNorm = (mouseX-(width/2)) / (width/2);
+			var yNorm = (mouseY-(height/2)) / (height/2);
 
-			if ( camera ) {
-
-				camera.aspect = this.width / this.height;
-				camera.updateProjectionMatrix();
-
-			}
-
-			if ( renderer ) {
-
-				renderer.setSize( width, height );
-
-			}
-
-		};
-
-		function dispatch( array, event ) {
-
-			for ( var i = 0, l = array.length; i < l; i ++ ) {
-
-				array[ i ]( event );
-
-			}
-
+			object.rotation.y = xNorm * xMag;
+			object.rotation.x = yNorm * yMag;
 		}
 
-		var prevTime, request;
+		function rotateMilkFace ( event ) {
+			rotateObject (event, milkFaceObject, 0.05, 0.01);
+		}
 
-		function animate( time ) {
+		function stopRotate (rotateEvent, stopEvent) {
+			window.removeEventListener( 'mousemove', rotateEvent);
+			window.removeEventListener('mousedown', stopEvent);
+		}
 
+		function stopRotateMilkFace () {
+			stopRotate (rotateMilkFace, stopRotateMilkFace);
+		}
+
+		function setSize ( newWidth, newHeight ) {
+			width = newWidth;
+			height = newHeight;
+
+			camera.aspect = width / height;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( width, height );
+		};
+
+		function setSizeToWindow () {
+			setSize( window.innerWidth, window.innerHeight );
+		}
+
+		var request;
+		function animate() {
 			request = requestAnimationFrame( animate );
-
-			try {
-
-				dispatch( events.update, { time: time, delta: time - prevTime } );
-
-			} catch ( e ) {
-
-				console.error( ( e.message || e ), ( e.stack || "" ) );
-
-			}
-
-			if ( isVR === true ) {
-
-				camera.updateMatrixWorld();
-
-				controls.update();
-				effect.render( scene, cameraVR );
-
-			} else {
-
-				renderer.render( scene, camera );
-
-			}
-
-			prevTime = time;
-
+			renderer.render( scene, camera );
 		}
 
 		this.play = function () {
-
-			document.addEventListener( 'keydown', onDocumentKeyDown );
-			document.addEventListener( 'keyup', onDocumentKeyUp );
-			document.addEventListener( 'mousedown', onDocumentMouseDown );
-			document.addEventListener( 'mouseup', onDocumentMouseUp );
-			document.addEventListener( 'mousemove', onDocumentMouseMove );
-			document.addEventListener( 'touchstart', onDocumentTouchStart );
-			document.addEventListener( 'touchend', onDocumentTouchEnd );
-			document.addEventListener( 'touchmove', onDocumentTouchMove );
-
-			dispatch( events.start, arguments );
+			setSizeToWindow ();
 
 			request = requestAnimationFrame( animate );
-			prevTime = performance.now();
-
+			window.addEventListener( 'resize', setSizeToWindow);
+			window.addEventListener( 'mousemove', rotateMilkFace);
+			window.addEventListener("mousedown", stopRotateMilkFace);
 		};
 
 		this.stop = function () {
-
-			document.removeEventListener( 'keydown', onDocumentKeyDown );
-			document.removeEventListener( 'keyup', onDocumentKeyUp );
-			document.removeEventListener( 'mousedown', onDocumentMouseDown );
-			document.removeEventListener( 'mouseup', onDocumentMouseUp );
-			document.removeEventListener( 'mousemove', onDocumentMouseMove );
-			document.removeEventListener( 'touchstart', onDocumentTouchStart );
-			document.removeEventListener( 'touchend', onDocumentTouchEnd );
-			document.removeEventListener( 'touchmove', onDocumentTouchMove );
-
-			dispatch( events.stop, arguments );
-
 			cancelAnimationFrame( request );
-
-		};
-
-		this.dispose = function () {
-
-			while ( this.dom.children.length ) {
-
-				this.dom.removeChild( this.dom.firstChild );
-
-			}
-
-			renderer.dispose();
-
-			camera = undefined;
-			scene = undefined;
-			renderer = undefined;
-
-		};
-
-		//
-
-		function onDocumentKeyDown( event ) {
-
-			dispatch( events.keydown, event );
-
+			window.removeEventListener( 'resize', setSizeToWindow);
+			window.removeEventListener( 'mousemove', rotateMilkFace);
+			window.removeEventListener('mousedown', stopRotateMilkFace);
 		}
-
-		function onDocumentKeyUp( event ) {
-
-			dispatch( events.keyup, event );
-
-		}
-
-		function onDocumentMouseDown( event ) {
-
-			dispatch( events.mousedown, event );
-
-		}
-
-		function onDocumentMouseUp( event ) {
-
-			dispatch( events.mouseup, event );
-
-		}
-
-		function onDocumentMouseMove( event ) {
-
-			dispatch( events.mousemove, event );
-
-		}
-
-		function onDocumentTouchStart( event ) {
-
-			dispatch( events.touchstart, event );
-
-		}
-
-		function onDocumentTouchEnd( event ) {
-
-			dispatch( events.touchend, event );
-
-		}
-
-		function onDocumentTouchMove( event ) {
-
-			dispatch( events.touchmove, event );
-
-		}
-
-	}
-
-};
+}

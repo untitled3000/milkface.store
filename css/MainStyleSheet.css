@@ -1,0 +1,33 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    background-color: #ffffff;
+    margin: 0px;
+    overflow: hidden;
+}
+
+/* Defining each section background and styles
+* --------------------------------------- */
+#section0{
+    background: -webkit-gradient(linear, top left, bottom left, from(#ff6ef0), to(#ffc0f8));
+    background: -webkit-linear-gradient(#ff6ef0, #ffc0f8);
+    background: linear-gradient(#ff6ef0,#ffc0f8);
+}
+
+#section1{
+    background: -webkit-gradient(linear, top left, bottom left, from(#ffc0f8), to(#ffe4fc));
+    background: -webkit-linear-gradient(#ffc0f8, #ffe4fc);
+    background: linear-gradient(#ffc0f8,#ffe4fc);
+}
+
+#section2{
+    background: -webkit-gradient(linear, top left, bottom left, from(#ffe4fc), to(#fffeff));
+    background: -webkit-linear-gradient(#ffe4fc, #fffeff);
+    background: linear-gradient(#ffe4fc,#fffeff);
+}
+
+/* Overwriting fullPage.js tooltip color
+* --------------------------------------- */
+.fp-tooltip{
+    color: #333 !important;
+}
