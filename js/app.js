@@ -19,10 +19,6 @@ function milkFaceScene () {
 			renderer.setClearColor( 0xffffff, 0);
 			renderer.setPixelRatio( window.devicePixelRatio );
 
-			if ( json.project.shadows ) {
-				renderer.shadowMap.enabled = true;
-			}
-
 			this.dom.appendChild( renderer.domElement );
 
 			setScene( loader.parse( json.scene ) );
