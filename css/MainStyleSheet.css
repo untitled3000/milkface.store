@@ -6,6 +6,14 @@ body {
     overflow: hidden;
 }
 
+.bananaLoader {
+    position: absolute;
+    height: 15vh;
+    width: auto;
+    top: calc((100% - 15vh)/2);
+    left: calc((100% - 15vh)/2);
+}
+
 /* Defining each section background and styles
 * --------------------------------------- */
 #section0{

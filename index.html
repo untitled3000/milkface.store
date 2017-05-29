@@ -28,13 +28,15 @@
 					navigation: true,
 					navigationPosition: 'right',
 					navigationTooltips: ['Milk Face', 'Video', 'Text'],
-					continuousVertical: true
 				});
 
 				var parent =  $("#section0").children(".fp-tableCell");
+				var loadingGif = document.createElement("IMG");
+				loadingGif.src = "./images/banana_loader.gif";
+				loadingGif.className = "bananaLoader";
 
 				var milkFace = new milkFacePlayer();
-				milkFace.loadPlayer(parent);
+				milkFace.loadPlayer(parent, loadingGif);
 			});
 		</script>
 
