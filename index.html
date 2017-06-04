@@ -23,19 +23,34 @@
 
 		<script type="text/javascript">
 
+			var milkFace;
+			var previousIndex;
+
 			$(document).ready(function() {
 				$('#fullpage').fullpage({
 					navigation: true,
 					navigationPosition: 'right',
 					navigationTooltips: ['Milk Face', 'Video', 'Text'],
+					scrollingSpeed: 1000,
+					'onLeave': function(index, nextIndex, direction){
+						previousIndex = index;
+						if (nextIndex == 1) {
+							milkFace.play();
+						}
+					},
+					'afterLoad': function(anchorLink, index){
+						if (previousIndex == 1){
+							milkFace.stop();
+						}
+					}
 				});
 
-				var parent =  $("#section0").children(".fp-tableCell");
+				var parent = document.body;
 				var loadingGif = document.createElement("IMG");
 				loadingGif.src = "./images/banana_loader.gif";
 				loadingGif.className = "bananaLoader";
 
-				var milkFace = new milkFacePlayer();
+				milkFace = new milkFacePlayer();
 				milkFace.loadPlayer(parent, loadingGif);
 			});
 		</script>

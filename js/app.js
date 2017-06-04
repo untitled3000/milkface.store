@@ -1,18 +1,18 @@
-
 function milkFaceScene () {
 
+		var $this = this;
+		var milkFaceObject;
 		var loader;
 		var camera, scene, renderer;
 		var width, height;
 		var controls;
 		var mouseX, mouseY;
-		var milkFaceObject;
+		var request;
 
 		this.dom = document.createElement( 'div' );
+		this.dom.className = "milkFaceContainer"
 
 		this.load = function ( json ) {
-			console.log (json);
-
 			var loader = new THREE.ObjectLoader();
 
 			renderer = new THREE.WebGLRenderer( { antialias: true,  alpha: true  } );
@@ -27,7 +27,7 @@ function milkFaceScene () {
 			setMilkFace(scene.children[0].children[0]);
 			addEnvMap( milkFaceObject);
 
-    		controls = new THREE.OrbitControls(camera, renderer.domElement);
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
 			controls.enableZoom = false;
 			controls.enablePan = false;
 		};
@@ -92,14 +92,29 @@ function milkFaceScene () {
 			setSize( window.innerWidth, window.innerHeight );
 		}
 
-		var request;
 		function animate() {
+			parallax(milkFaceObject);
 			request = requestAnimationFrame( animate );
 			renderer.render( scene, camera );
 		}
 
+		function parallax (object) {
+			var node = document.getElementById("fullpage");
+			var scroll_distance = node.getBoundingClientRect().top; //real offset top
+			var page_height = -scroll_distance/window.innerHeight
+			object.position.y = 10*(page_height);
+
+			// fade effect
+			if (page_height > 0.75){
+				$this.dom.style.opacity = (4 * (1 - page_height));
+			}
+		}
+
 		this.play = function () {
 			setSizeToWindow ();
+			$($this.dom).show();
+			controls.enabled=true;
+			controls.reset();
 
 			request = requestAnimationFrame( animate );
 			window.addEventListener( 'resize', setSizeToWindow);
@@ -108,6 +123,9 @@ function milkFaceScene () {
 		};
 
 		this.stop = function () {
+			$($this.dom).hide();
+			controls.enabled=false;
+
 			cancelAnimationFrame( request );
 			window.removeEventListener( 'resize', setSizeToWindow);
 			window.removeEventListener( 'mousemove', rotateMilkFace);

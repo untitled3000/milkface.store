@@ -39,3 +39,8 @@ body {
 .fp-tooltip{
     color: #333 !important;
 }
+
+.milkFaceContainer {
+    position: absolute;
+    top: 0px;
+}
