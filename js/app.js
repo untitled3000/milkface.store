@@ -8,6 +8,7 @@ function milkFaceScene () {
 		var controls;
 		var mouseX, mouseY;
 		var request;
+		var defaultRotation = new THREE.Euler(degrees2Rad(-2), degrees2Rad(44), 0);
 
 		this.dom = document.createElement( 'div' );
 		this.dom.className = "milkFaceContainer"
@@ -27,14 +28,15 @@ function milkFaceScene () {
 			setMilkFace(scene.children[0].children[0]);
 			addEnvMap( milkFaceObject);
 
-			controls = new THREE.OrbitControls(camera, renderer.domElement);
-			controls.enableZoom = false;
-			controls.enablePan = false;
+			controls = new RotationWithQuaternion(milkFaceObject);
 		};
 
 		function setCamera ( value ) {
-			camera = value;
-			camera.aspect = width / height;
+			//camera = value;
+			//camera.aspect = width / height;
+
+			camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 0.1, 10000 );
+			camera.position.z = 9.5;
 			camera.updateProjectionMatrix();
 		};
 
@@ -46,6 +48,16 @@ function milkFaceScene () {
 			milkFaceObject = value;
 		}
 
+		function setRotation (object, angle) {
+			object.setRotationFromEuler (
+				angle
+			);
+		}
+
+		function degrees2Rad(degrees) {
+			return degrees * (Math.PI/180);
+		}
+
 		function addEnvMap ( object ){
 			var enviorment = new THREE.CubeTextureLoader()
 				.setPath( 'textures/cube_map/' )
@@ -54,19 +66,27 @@ function milkFaceScene () {
 			object.material.envMap = enviorment;
 		};
 
-		function rotateObject ( event, object, xMag, yMag ) {
+		function rotateObject2Mouse ( event, object, xMag, yMag ) {
 			mouseX = event.clientX;
 			mouseY = event.clientY;
 
 			var xNorm = (mouseX-(width/2)) / (width/2);
 			var yNorm = (mouseY-(height/2)) / (height/2);
 
-			object.rotation.y = xNorm * xMag;
-			object.rotation.x = yNorm * yMag;
+			rotationY = xNorm * xMag;
+			rotationX = yNorm * yMag;
+
+			var newRotation = new THREE.Euler(
+				defaultRotation.x + rotationX,
+				defaultRotation.y + rotationY,
+				defaultRotation.z
+			);
+
+			setRotation(milkFaceObject, newRotation);
 		}
 
-		function rotateMilkFace ( event ) {
-			rotateObject (event, milkFaceObject, 0.05, 0.01);
+		function rotateMilkFace2Mouse ( event ) {
+			rotateObject2Mouse (event, milkFaceObject, 0.05, 0.01);
 		}
 
 		function stopRotate (rotateEvent, stopEvent) {
@@ -74,8 +94,8 @@ function milkFaceScene () {
 			window.removeEventListener('mousedown', stopEvent);
 		}
 
-		function stopRotateMilkFace () {
-			stopRotate (rotateMilkFace, stopRotateMilkFace);
+		function stopRotateMilkFace2Mouse () {
+			stopRotate (rotateMilkFace2Mouse, stopRotateMilkFace2Mouse);
 		}
 
 		function setSize ( newWidth, newHeight ) {
@@ -113,22 +133,22 @@ function milkFaceScene () {
 		this.play = function () {
 			setSizeToWindow ();
 			$($this.dom).show();
-			controls.enabled=true;
-			controls.reset();
+			controls.play();
+			setRotation(milkFaceObject, defaultRotation);
 
 			request = requestAnimationFrame( animate );
 			window.addEventListener( 'resize', setSizeToWindow);
-			window.addEventListener( 'mousemove', rotateMilkFace);
-			window.addEventListener("mousedown", stopRotateMilkFace);
+			window.addEventListener( 'mousemove', rotateMilkFace2Mouse);
+			window.addEventListener("mousedown", stopRotateMilkFace2Mouse);
 		};
 
 		this.stop = function () {
 			$($this.dom).hide();
-			controls.enabled=false;
+			controls.stop();
 
 			cancelAnimationFrame( request );
 			window.removeEventListener( 'resize', setSizeToWindow);
-			window.removeEventListener( 'mousemove', rotateMilkFace);
-			window.removeEventListener('mousedown', stopRotateMilkFace);
+			window.removeEventListener( 'mousemove', rotateMilkFace2Mouse);
+			window.removeEventListener('mousedown', stopRotateMilkFace2Mouse);
 		}
 }
