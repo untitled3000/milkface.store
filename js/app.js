@@ -28,7 +28,7 @@ function milkFaceScene () {
 			setMilkFace(scene.children[0].children[0]);
 			addEnvMap( milkFaceObject);
 
-			controls = new RotationWithQuaternion(milkFaceObject);
+			controls = new RotationWithQuaternion(milkFaceObject, camera);
 		};
 
 		function setCamera ( value ) {

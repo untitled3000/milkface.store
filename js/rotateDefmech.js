@@ -1,4 +1,4 @@
-function RotationWithQuaternion (object) {
+function RotationWithQuaternion (object, camera) {
 
 	var mouseDown = false;
 	var rotateStartPoint = new THREE.Vector3(0, 0, 1);
@@ -21,6 +21,8 @@ function RotationWithQuaternion (object) {
 	var minDelta = 0.05;
 
 	var request;
+	var raycaster = new THREE.Raycaster();
+	var mouse = new THREE.Vector2();
 
 	this.play = function () {
 		request = requestAnimationFrame(animate);
@@ -45,17 +47,28 @@ function RotationWithQuaternion (object) {
 	function onDocumentMouseDown(event){
 		event.preventDefault();
 
-		document.addEventListener('mousemove', onDocumentMouseMove, false);
-		document.addEventListener('mouseup', onDocumentMouseUp, false);
+		var rayCast = getRaycast();
+		if (rayCast.length > 0){
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+			document.addEventListener('mouseup', onDocumentMouseUp, false);
 
-		mouseDown = true;
+			mouseDown = true;
 
-		startPoint = {
-			x: event.clientX,
-			y: event.clientY
-		};
+			startPoint = {
+				x: event.clientX,
+				y: event.clientY
+			};
 
-		rotateStartPoint = rotateEndPoint = projectOnTrackball(0, 0);
+			rotateStartPoint = rotateEndPoint = projectOnTrackball(0, 0);
+		}
+	}
+
+	function getRaycast (){
+		mouse.x =   (( event.clientX / window.innerWidth ) * 2 - 1);
+		mouse.y = - (( event.clientY / window.innerHeight ) * 2 - 1);
+
+		raycaster.setFromCamera( mouse, camera );
+		return raycaster.intersectObject(object);
 	}
 
 	function onDocumentMouseMove(event){
