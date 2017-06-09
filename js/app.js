@@ -95,7 +95,9 @@ function milkFaceScene () {
 		}
 
 		function stopRotateMilkFace2Mouse () {
-			stopRotate (rotateMilkFace2Mouse, stopRotateMilkFace2Mouse);
+			if (controls.mouseOverObject) {
+				stopRotate (rotateMilkFace2Mouse, stopRotateMilkFace2Mouse);
+			}
 		}
 
 		function setSize ( newWidth, newHeight ) {

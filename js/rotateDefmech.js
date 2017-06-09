@@ -8,7 +8,7 @@ function RotationWithQuaternion (object, camera) {
 	var windowHalfX = window.innerWidth / 2;
 	var windowHalfY = window.innerHeight / 2;
 	var rotationSpeed = 2;
-	var lastMoveTimestamp;
+	var lastMoveTimestamp = new Date();
 	var moveReleaseTimeDelta = 50;
 
 	var startPoint = {
@@ -22,21 +22,27 @@ function RotationWithQuaternion (object, camera) {
 
 	var request;
 	var raycaster = new THREE.Raycaster();
-	var mouse = new THREE.Vector2();
+	var mouse = new THREE.Vector2(-10,-10); // have cursor default on load
+
+	var $this = this;
+	this.mouseOverObject = false;
 
 	this.play = function () {
 		request = requestAnimationFrame(animate);
 
 		document.addEventListener('mousedown', onDocumentMouseDown, false);
 		document.removeEventListener('resize', onWindowResize, false);
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
 	}
 
 	this.stop = function () {
-		var deltaX = deltaY = 0;
+		deltaX = deltaY = 0;
+		rotateStartPoint = new THREE.Vector3(0, 0, 1);
 		cancelAnimationFrame( request );
 
 		document.removeEventListener('mousedown', onDocumentMouseDown, false);
 		document.removeEventListener( 'resize', onWindowResize, false );
+		document.removeEventListener('mousemove', onDocumentMouseMove, false);
 	}
 
 	function onWindowResize(){
@@ -47,9 +53,8 @@ function RotationWithQuaternion (object, camera) {
 	function onDocumentMouseDown(event){
 		event.preventDefault();
 
-		var rayCast = getRaycast();
-		if (rayCast.length > 0){
-			document.addEventListener('mousemove', onDocumentMouseMove, false);
+		if ($this.mouseOverObject){
+			document.addEventListener('mousemove', onDocumentMouseMoveIfMouseDown, false);
 			document.addEventListener('mouseup', onDocumentMouseUp, false);
 
 			mouseDown = true;
@@ -63,15 +68,12 @@ function RotationWithQuaternion (object, camera) {
 		}
 	}
 
-	function getRaycast (){
+	function onDocumentMouseMove (event) {
 		mouse.x =   (( event.clientX / window.innerWidth ) * 2 - 1);
 		mouse.y = - (( event.clientY / window.innerHeight ) * 2 - 1);
-
-		raycaster.setFromCamera( mouse, camera );
-		return raycaster.intersectObject(object);
 	}
 
-	function onDocumentMouseMove(event){
+	function onDocumentMouseMoveIfMouseDown(event){
 		deltaX = event.x - startPoint.x;
 		deltaY = event.y - startPoint.y;
 
@@ -91,7 +93,7 @@ function RotationWithQuaternion (object, camera) {
 
 		mouseDown = false;
 
-		document.removeEventListener('mousemove', onDocumentMouseMove, false);
+		document.removeEventListener('mousemove', onDocumentMouseMoveIfMouseDown, false);
 		document.removeEventListener('mouseup', onDocumentMouseUp, false);
 	}
 
@@ -134,6 +136,9 @@ function RotationWithQuaternion (object, camera) {
 
 	function animate(){
 		slowRotation();
+		$this.mouseOverObject = getRaycast();
+		updateCursor();
+
 		request = requestAnimationFrame(animate);
 	}
 
@@ -165,5 +170,18 @@ function RotationWithQuaternion (object, camera) {
 		object.setRotationFromQuaternion(curQuaternion);
 
 		rotateEndPoint = rotateStartPoint;
+	}
+
+	function getRaycast (){
+		raycaster.setFromCamera( mouse, camera );
+		return (raycaster.intersectObject(object).length > 0);
+	}
+
+	function updateCursor () {
+		if ($this.mouseOverObject) {
+			document.body.style.cursor = 'pointer';
+		} else {
+			document.body.style.cursor = 'default';
+		}
 	}
 }
