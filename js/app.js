@@ -26,7 +26,10 @@ function milkFaceScene () {
 			setCamera( loader.parse( json.camera ) );
 
 			setMilkFace(scene.children[0].children[0]);
+			addBasicMaterial(milkFaceObject);
+			addNormalMap (milkFaceObject);
 			addEnvMap( milkFaceObject);
+			addDifMap (milkFaceObject);
 
 			controls = new RotationWithQuaternion(milkFaceObject, camera);
 		};
@@ -60,10 +63,46 @@ function milkFaceScene () {
 
 		function addEnvMap ( object ){
 			var enviorment = new THREE.CubeTextureLoader()
-				.setPath( 'textures/cube_map/' )
+				.setPath( 'textures/lo_res/cube_map/' )
 				.load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
 
 			object.material.envMap = enviorment;
+		};
+
+		function addDifMap (object){
+			var difMap = new THREE.TextureLoader().load( "./textures/lo_res/ao.png" );
+
+			object.material.map = difMap;
+		};
+
+		function addNormalMap (object){
+			var normMap = new THREE.TextureLoader().load( "./textures/lo_res/normal.png" );
+			var normScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
+
+			object.material.normalMap = normMap;
+			object.material.normalScale = normScale;
+		};
+
+		function addBasicMaterial (object) {
+			var basicMaterial = new THREE.MeshStandardMaterial
+
+			({				
+				"color": 15921906,
+				"roughness": 0.25,
+				"metalness": 0.05,
+				"emissive": 0,
+				"map": null,
+				"normalMap": null,
+				"normalScale": null,
+				"envMap": null,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"skinning": false,
+				"morphTargets": false
+			});
+
+			object.material = basicMaterial;
 		};
 
 		function rotateObject2Mouse ( event, object, xMag, yMag ) {
