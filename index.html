@@ -64,14 +64,29 @@
 					}
 				});
 
+				setScrolling.execute(false);
+
 				var parent = document.body;
 				var loadingGif = document.createElement("IMG");
 				loadingGif.src = "./images/banana_loader.gif";
 				loadingGif.className = "bananaLoader";
 
 				milkFace = new milkFacePlayer();
-				milkFace.loadPlayer(parent, loadingGif);
+				milkFace.loadPlayer(parent, loadingGif, setScrolling);
 			});
+
+			setScrolling = {
+				execute: function (setting) {
+					$.fn.fullpage.setAllowScrolling(setting);
+					$.fn.fullpage.setKeyboardScrolling(setting);
+					if (setting) {
+						$("#fp-nav").fadeIn(750);
+					} else {
+						$('#fp-nav').hide();
+					}
+				}
+			}
+
 		</script>
 
 	</head>

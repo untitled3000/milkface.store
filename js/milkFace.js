@@ -1,6 +1,6 @@
 function milkFacePlayer () {
 
-    this.loadPlayer = function (parent, loadingGif) {
+    this.loadPlayer = function (parent, loadingGif, setScrolling) {
         parent.append( loadingGif );
         var loader = new THREE.FileLoader();
         loader.load( 'app.json', function ( text ) {
@@ -11,6 +11,7 @@ function milkFacePlayer () {
                 parent.append( player.dom );
                 player.dom.style.display = "none";
                 $(player.dom).fadeIn(750);
+                setScrolling.execute(true);
             })
         });
     }

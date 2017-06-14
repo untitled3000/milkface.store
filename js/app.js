@@ -35,9 +35,6 @@ function milkFaceScene () {
 		};
 
 		function setCamera ( value ) {
-			//camera = value;
-			//camera.aspect = width / height;
-
 			camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 0.1, 10000 );
 			camera.position.z = 9.5;
 			camera.updateProjectionMatrix();
@@ -86,7 +83,7 @@ function milkFaceScene () {
 		function addBasicMaterial (object) {
 			var basicMaterial = new THREE.MeshStandardMaterial
 
-			({				
+			({
 				"color": 15921906,
 				"roughness": 0.25,
 				"metalness": 0.05,
@@ -173,9 +170,10 @@ function milkFaceScene () {
 
 		this.play = function () {
 			setSizeToWindow ();
+			setRotation(milkFaceObject, defaultRotation);
+
 			$($this.dom).show();
 			controls.play();
-			setRotation(milkFaceObject, defaultRotation);
 
 			request = requestAnimationFrame( animate );
 			window.addEventListener( 'resize', setSizeToWindow);
