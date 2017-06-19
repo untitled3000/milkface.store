@@ -14,7 +14,7 @@ function milkFaceScene () {
 		this.dom.className = "milkFaceContainer"
 
 		this.load = function ( json ) {
-			var loader = new THREE.ObjectLoader();
+			loader = new THREE.ObjectLoader();
 
 			renderer = new THREE.WebGLRenderer( { antialias: true,  alpha: true  } );
 			renderer.setClearColor( 0xffffff, 0);
@@ -161,11 +161,6 @@ function milkFaceScene () {
 			var scroll_distance = node.getBoundingClientRect().top; //real offset top
 			var page_height = -scroll_distance/window.innerHeight
 			object.position.y = 10*(page_height);
-
-			// fade effect
-			if (page_height > 0.75){
-				$this.dom.style.opacity = (4 * (1 - page_height));
-			}
 		}
 
 		this.play = function () {

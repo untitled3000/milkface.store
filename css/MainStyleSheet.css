@@ -47,15 +47,17 @@ body {
 
 /* default fullPage CSS ruls is vertical-align:middle */
 /* When height of page is 1525 px, video is 1280 x 720 */
-.videoContainer {
+.infoContainerHorizontal {
     position:relative;;
     margin: auto;
 
-    height: calc(100vh * 720/1525);
     width: calc(100vh * 1280/1525);
-
-    max-height: calc((100vw - 130px) * 720/1280);
     max-width: calc(100vw - 130px);
+}
+
+.videoContainer {
+    height: calc(100vh * 720/1525);
+    max-height: calc((100vw - 130px) * 720/1280);
 }
 
 .videoVimeoIframe {
@@ -72,4 +74,72 @@ body {
     z-index: 1;
     top: calc(100% * 120/720);
     left: calc(100% * -160/1280)
+}
+
+/* photo gallery */
+.photoGallery {
+    width: calc(50% - 4px);
+    display: inline-grid;
+    position:relative;
+}
+
+.photoText {
+    width: calc(50% - 4px);
+    display: inline-block;
+    float:right;
+}
+
+.photoGallery .zoom {
+    margin-bottom:4px;
+}
+
+.photoGallery .selectedImage {
+    width: 100%;
+    height: auto;
+    display:block;
+}
+
+.photoGallery .zoomIcon {
+    display:block;
+    width:33px;
+    height:33px;
+    position:absolute;
+    top:0;
+    right:0;
+    z-index:2;
+}
+
+.photoGallery p {
+    position:absolute;
+    top:3px;
+    right:28px;
+    color:#555;
+    font:bold 13px/1 sans-serif;
+    margin:0;
+}
+
+.photoGallery .previewImage {
+    width: calc((100% - (8px * 4))/5);
+    height: auto;
+    float:left;
+    margin: 4px 4px 0px 4px;
+
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+
+}
+
+.photoGallery .previewImage:hover {
+    -webkit-filter: none; /* Safari 6.0 - 9.0 */
+    filter: none;
+
+    cursor: pointer;
+}
+
+.photoGallery .previewImage:first-child {
+    margin-left: 0px;
+}
+
+.photoGallery .previewImage:last-child {
+    margin-right: 0px;
 }

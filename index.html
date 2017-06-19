@@ -38,6 +38,11 @@
 		<script src="js/rotateDefmech.js"></script>
 		<script src="js/milkFace.js"></script>
 
+		<!--Photo Gallery -->
+		<script src='js/jquery.zoom.js'></script>
+		<script src="js/milkFacePhotos.js"></script>
+
+		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="css/MainStyleSheet.css" />
 
 		<script type="text/javascript">
@@ -55,24 +60,31 @@
 						previousIndex = index;
 						if (nextIndex == 1) {
 							milkFace.play();
+						} else if (nextIndex == 3) {
+							photoGallery.play();
 						}
 					},
 					'afterLoad': function(anchorLink, index){
 						if (previousIndex == 1){
 							milkFace.stop();
+						} else if (previousIndex == 3){
+							photoGallery.stop();
 						}
 					}
 				});
 
 				setScrolling.execute(false);
 
-				var parent = document.body;
+				var milkFaceParent = document.body;
 				var loadingGif = document.createElement("IMG");
 				loadingGif.src = "./images/banana_loader.gif";
 				loadingGif.className = "bananaLoader";
 
 				milkFace = new milkFacePlayer();
-				milkFace.loadPlayer(parent, loadingGif, setScrolling);
+				milkFace.loadPlayer(milkFaceParent, loadingGif, setScrolling);
+
+				var photoGalleryParent = $(".photoGallery");
+				photoGallery = new milkFacePhotos(photoGalleryParent);
 			});
 
 			setScrolling = {
@@ -88,8 +100,8 @@
 			}
 
 		</script>
-
 	</head>
+
 	<body>
 
 		<div id="fullpage">
@@ -98,13 +110,24 @@
 			</div>
 
 			<div class="section" id="section1">
-				<div class="videoContainer">
+				<div class="infoContainerHorizontal videoContainer">
 					<img class="videoHalftone" src="images/halftone.png" alt="halftone">
 					<iframe class="videoVimeoIframe" src="https://player.vimeo.com/video/219336335?color=ffffff&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
 					</iframe>
 				</div>
 			</div>
 			<div class="section" id="section2">
+				<div class="infoContainerHorizontal">
+					<div class="photoGallery"/>
+					</div>
+					<div class="photoText">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+						et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+						aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
+						qui officia deserunt mollit anim id est laborum.
+					</div>
+				</div>
 			</div>
 
 		</div>
