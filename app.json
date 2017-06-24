@@ -1,32 +1,6 @@
 {
-	"metadata": {
-		"type": "App"
-	},
-	"project": {
-		"gammaInput": false,
-		"gammaOutput": false,
-		"shadows": true,
-		"vr": false
-	},
 	"camera": {
-		"metadata": {
-			"version": 4.4,
-			"type": "Object",
-			"generator": "Object3D.toJSON"
-		},
 		"object": {
-			"uuid": "C624C975-D5EB-4BB5-97E0-CA986B65DCC7",
-			"type": "PerspectiveCamera",
-			"name": "Camera",
-			"matrix": [0.796204,0,0.605028,0,-0.009556,0.999875,0.012576,0,-0.604953,-0.015795,0.796105,0,-6.188525,-0.224349,7.12761,1],
-			"fov": 50,
-			"zoom": 1,
-			"near": 0.1,
-			"far": 10000,
-			"focus": 10,
-			"aspect": 1.127555,
-			"filmGauge": 35,
-			"filmOffset": 0
 		}
 	},
 	"scene": {
