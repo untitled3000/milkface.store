@@ -16,8 +16,10 @@ function milkFacePhotos (parent) {
 
 	this.play = function () {
 		resetZoom();
+		resizeFont();
 
 		window.addEventListener("resize", resetZoom);
+		window.addEventListener("resize", resizeFont);
 		for (var i = 0; i < imageIcons.length; i++){
 			imageIcons[i].addEventListener("click", updateSelectedImage);
 		}
@@ -25,6 +27,7 @@ function milkFacePhotos (parent) {
 
 	this.stop = function () {
 		window.removeEventListener( 'resize', resetZoom);
+		window.removeEventListener( 'resize', resizeFont);
 		for (var i = 0; i < imageIcons.length; i++){
 			imageIcons[i].removeEventListener("click", updateSelectedImage);
 		}
@@ -87,5 +90,14 @@ function milkFacePhotos (parent) {
 
 	function removeZoom (){
 		$(selectedSpan).trigger('zoom.destroy'); // remove zoom
+	}
+
+	function resizeFont (){
+		var text = $(".photoText");
+		var area = text.width() * text.height();
+		var fontSize = Math.sqrt(area)/28;
+		text.css({
+			fontSize: fontSize
+		});
 	}
 }

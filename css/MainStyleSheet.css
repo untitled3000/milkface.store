@@ -86,7 +86,10 @@ body {
 .photoText {
     width: calc(50% - 4px);
     display: inline-block;
-    float:right;
+    position: absolute;
+    height: 100%;
+    right: 0px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .photoGallery .zoom {
