@@ -6,7 +6,7 @@ function milkFacePlayer () {
         loader.load( 'app.json', function ( text ) {
             player = new milkFaceScene();
             player.load( JSON.parse( text ) );
-            player.play();
+            // player.play();
             $(loadingGif).fadeOut(750, function(){
                 parent.append( player.dom );
                 player.dom.style.display = "none";

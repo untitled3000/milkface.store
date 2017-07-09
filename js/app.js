@@ -25,13 +25,72 @@ function milkFaceScene () {
 			setScene( loader.parse( json.scene ) );
 			setCamera( loader.parse( json.camera ) );
 
-			setMilkFace(scene.children[0].children[0]);
-			addBasicMaterial(milkFaceObject);
-			addNormalMap (milkFaceObject);
-			addEnvMap( milkFaceObject);
-			addDifMap (milkFaceObject);
+			scene.remove(scene.children[0].children[0]);
 
+
+
+			//
+
+
+				var manager = new THREE.LoadingManager(); 
+				manager.onProgress = function ( item, loaded, total ) {
+
+					console.log( item, loaded, total );
+
+				};
+
+				var texture = new THREE.Texture();
+
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+
+				var onError = function ( xhr ) {
+				};
+
+
+				var loader = new THREE.ImageLoader( manager );
+				loader.load( 'UV_Grid_Sm.jpg', function ( image ) {
+
+					texture.image = image;
+					texture.needsUpdate = true;
+
+				} );
+				// model
+
+				var loader = new THREE.OBJLoader( manager );
+				loader.load( 'milkface_lo.obj', function ( object ) {
+
+					object.traverse( function ( child ) {
+
+						if ( child instanceof THREE.Mesh ) {
+
+							// child.material.map = texture;
+
+						}
+
+					} );
+
+					
+					scene.add( object );
+
+					setMilkFace(object);
+
+					addBasicMaterial(milkFaceObject);
+					addNormalMap (milkFaceObject);
+					addEnvMap( milkFaceObject);
+					addDifMap (milkFaceObject);
 			controls = new RotationWithQuaternion(milkFaceObject, camera);
+
+					$this.play();
+
+				}, onProgress, onError );
+
+			//
+
 		};
 
 		function setCamera ( value ) {
@@ -46,6 +105,7 @@ function milkFaceScene () {
 
 		function setMilkFace ( value ) {
 			milkFaceObject = value;
+			console.log(milkFaceObject.position);
 		}
 
 		function setRotation (object, angle) {
