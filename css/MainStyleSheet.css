@@ -87,7 +87,10 @@ body {
     width: calc(50% - 4px);
     display: inline-block;
     position: absolute;
+    text-align: justify;
+    line-height: 150%;
     height: 100%;
+    vertical-align: middle;
     right: 0px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -145,4 +148,8 @@ body {
 
 .photoGallery .previewImage:last-child {
     margin-right: 0px;
+}
+
+p {
+       line-height: 150%;
 }
