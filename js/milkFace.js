@@ -1,26 +1,38 @@
 function milkFacePlayer () {
 
-    var player;
-    var manager;
-    var obj;
-    var texture;
+    var player, manager;
+    var objs = {};
+    var textures = {};
+
+    var objURLs = [
+        {
+            "name" : "milkface",
+            "url" : "objs/milkface.obj",
+            "map" : "textures/milkface/ao.png",
+            "normalMap" : "textures/milkface/normal.png"
+        },
+        {
+            "name" : "arrow",
+            "url" : "objs/arrow.obj",
+            "map" : "textures/arrow/normal.png"
+        }
+    ];
 
     this.loadPlayer = function (parent, loadingGif, setScrolling) {
         parent.append( loadingGif );
 
         manager = new THREE.LoadingManager();
         loadTexture();
-        loadObj();
-
+        loadObjs();
         manager.onProgress = function ( item, loaded, total ) {
             console.log(loaded + "\/" + total + " files loaded \(" + item + "\)");
         };
 
         manager.onLoad = function ( ) {
             console.log( 'Loading complete!');
-            player = new milkFaceScene(obj, texture);
-            player.play();
+            player = new milkFaceScene(objs, textures);
             $(loadingGif).fadeOut(750, function(){
+                player.play();
                 parent.append( player.dom );
                 player.dom.style.display = "none";
                 $(player.dom).fadeIn(750);
@@ -37,43 +49,35 @@ function milkFacePlayer () {
         player.stop();
     }
 
-    function loadObj () {
+    function loadObjs () {
         var loader = new THREE.OBJLoader(manager);
-        loader.load( 'objs/milkface_lo.obj', function ( object ) {
-            obj = object.children[0];
-        });
+        for (var i = 0; i < objURLs.length; i++) {
+            loadObj(loader, objURLs[i])
+        }
+
+        function loadObj(loader, objectInfo){
+            loader.load( objectInfo.url, function ( object ) {
+                objs[objectInfo.name] = object.children[0];
+            });
+        }
     }
 
     function loadTexture () {
-        texture = new THREE.Texture();
-        addBasicMaterial();
-        addNormalMap ();
+        for (var i = 0; i < objURLs.length; i++) {
+            textures[objURLs[i].name] = newBasicMaterial();
+
+            if (objURLs[i].normalMap) {
+                addNormalMap (objURLs[i].normalMap, objURLs[i].name);
+            }
+
+            if (objURLs[i].map) {
+                addDifMap (objURLs[i].map, objURLs[i].name);
+            }
+        }
+
         addEnvMap();
-        addDifMap ();
 
-        function addEnvMap (){
-            var environment = new THREE.CubeTextureLoader(manager)
-                .setPath( 'textures/lo_res/cube_map/' )
-                .load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
-
-            texture.envMap = environment;
-        }
-
-        function addDifMap (){
-            var difMap = new THREE.TextureLoader(manager).load( "./textures/lo_res/ao.png" );
-
-            texture.map = difMap;
-        }
-
-        function addNormalMap (){
-            var normMap = new THREE.TextureLoader(manager).load( "./textures/lo_res/normal.png" );
-            var normScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
-
-            texture.normalMap = normMap;
-            texture.normalScale = normScale;
-        }
-
-        function addBasicMaterial () {
+        function newBasicMaterial () {
             var basicMaterial = new THREE.MeshStandardMaterial({
                 "color": 15921906,
                 "roughness": 0.25,
@@ -90,7 +94,31 @@ function milkFacePlayer () {
                 "morphTargets": false
             });
 
-            texture = basicMaterial;
+            return basicMaterial;
+        }
+
+        function addEnvMap (){
+            var environment = new THREE.CubeTextureLoader(manager)
+                .setPath( 'textures/cube_map/' )
+                .load( [ 'right.png', 'left.png', 'top.png', 'bottom.png', 'front.png', 'back.png' ] );
+
+            for (var i = 0; i < objURLs.length; i++) {
+                textures[objURLs[i].name].envMap = environment;
+            }
+        }
+
+        function addDifMap (url, name){
+            var difMap = new THREE.TextureLoader(manager).load( url );
+
+            textures[name].map = difMap;
+        }
+
+        function addNormalMap (url, name){
+            var normMap = new THREE.TextureLoader(manager).load( url );
+            var normScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
+
+            textures[name].normalMap = normMap;
+            textures[name].normalScale = normScale;
         }
     }
 }
