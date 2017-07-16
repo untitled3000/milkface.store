@@ -14,7 +14,8 @@ function milkFacePlayer () {
         {
             "name" : "arrow",
             "url" : "objs/arrow.obj",
-            "map" : "textures/arrow/normal.png"
+            "map" : "textures/arrow/normal.png",
+            "alphaMap" : "textures/arrow/alpha.png"
         }
     ];
 
@@ -63,8 +64,13 @@ function milkFacePlayer () {
     }
 
     function loadTexture () {
+
+        textures[objURLs[0].name] = newBasicMaterial();
+        
+        textures[objURLs[1].name] = newArrowMaterial();
+
+
         for (var i = 0; i < objURLs.length; i++) {
-            textures[objURLs[i].name] = newBasicMaterial();
 
             if (objURLs[i].normalMap) {
                 addNormalMap (objURLs[i].normalMap, objURLs[i].name);
@@ -72,6 +78,10 @@ function milkFacePlayer () {
 
             if (objURLs[i].map) {
                 addDifMap (objURLs[i].map, objURLs[i].name);
+            }
+
+            if (objURLs[i].alphaMap) {
+                addAlphaMap (objURLs[i].alphaMap, objURLs[i].name);
             }
         }
 
@@ -97,6 +107,26 @@ function milkFacePlayer () {
             return basicMaterial;
         }
 
+        function newArrowMaterial () {
+            var arrowMatertial = new THREE.MeshStandardMaterial({
+                "color": 15921906,
+                "roughness": 1.0,
+                "metalness": 0.0,
+                "emissive": 0,
+                "map": null,
+                "normalMap": null,
+                "normalScale": null,
+                "envMap": null,
+                "depthFunc": 3,
+                "depthTest": true,
+                "depthWrite": true,
+                "skinning": false,
+                "morphTargets": false
+            });
+
+            return arrowMatertial;
+        }
+
         function addEnvMap (){
             var environment = new THREE.CubeTextureLoader(manager)
                 .setPath( 'textures/cube_map/' )
@@ -111,6 +141,12 @@ function milkFacePlayer () {
             var difMap = new THREE.TextureLoader(manager).load( url );
 
             textures[name].map = difMap;
+        }
+
+        function addAlphaMap (url, name){
+            var aMap = new THREE.TextureLoader(manager).load( url );
+
+            textures[name].alphaMap = aMap;
         }
 
         function addNormalMap (url, name){
