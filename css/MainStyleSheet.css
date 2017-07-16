@@ -90,6 +90,9 @@ body {
     height: 100%;
     right: 0px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: justify;
+    line-height: 150%;
+    vertical-align: middle;
 }
 
 .photoGallery .zoom {
@@ -117,7 +120,7 @@ body {
     top:3px;
     right:28px;
     color:#555;
-    font:bold 13px/1 sans-serif;
+    font:bold 13px sans-serif;
     margin:0;
 }
 
