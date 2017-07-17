@@ -66,9 +66,7 @@ function milkFacePlayer () {
     function loadTexture () {
 
         textures[objURLs[0].name] = newBasicMaterial();
-        
         textures[objURLs[1].name] = newArrowMaterial();
-
 
         for (var i = 0; i < objURLs.length; i++) {
 
