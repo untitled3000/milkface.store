@@ -10,6 +10,7 @@ function milkFaceScene (object, texture) {
 		var animationRequest, arrowRotationRequest, arrowFadeRequest;
 		var startTime, fadeTime;
 		var arrowVisible;
+		var isMobile;
 
 		var defaultMilkfaceRotation = new THREE.Euler(degrees2Rad(-2), degrees2Rad(44), 0);
 		var defaultArrowRotation = new THREE.Euler(degrees2Rad(5), degrees2Rad(0), 0);
@@ -34,7 +35,12 @@ function milkFaceScene (object, texture) {
 			setMilkFace(object.milkface, texture.milkface);
 			setArrow(object.arrow, texture.arrow);
 
-			controls = new RotationWithQuaternion(milkFaceObject, camera);
+			isMobile = isTouchDevice();
+			if (isMobile) {
+				controls = new THREE.DeviceOrientationControls( milkFaceObject );
+			} else {
+				controls = new RotationWithQuaternion(milkFaceObject, camera);
+			}
 		};
 
 		function setCamera () {
@@ -98,7 +104,7 @@ function milkFaceScene (object, texture) {
 		}
 
 		function rotateMilkFace2Mouse ( event ) {
-			rotateObject2Mouse (event, milkFaceObject, 0.05, 0.01);
+			rotateObject2Mouse (event, milkFaceObject, 0.1, 0.01);
 		}
 
 		function stopRotate (rotateEvent, stopEvent) {
@@ -163,6 +169,11 @@ function milkFaceScene (object, texture) {
 		function animate() {
 			parallax();
 			renderer.render( scene, camera );
+
+			//hacky. try to fix
+			if (isMobile) {
+				controls.update();
+			}
 			requestAnimationFrame( animate );
 		}
 
@@ -173,11 +184,16 @@ function milkFaceScene (object, texture) {
 			camera.position.y = 10*(page_height);
 		}
 
+		function isTouchDevice(){
+    		return typeof window.ontouchstart !== 'undefined';
+		}
+
 		this.play = function () {
 			setSizeToWindow ();
 			setRotation(milkFaceObject, defaultMilkfaceRotation);
 			$($this.dom).show();
 			controls.play();
+
 			startTime = new Date().getTime();
 
 			animationRequest = requestAnimationFrame( animate );
@@ -187,8 +203,11 @@ function milkFaceScene (object, texture) {
 			}
 
 			window.addEventListener( 'resize', setSizeToWindow);
-			window.addEventListener( 'mousemove', rotateMilkFace2Mouse);
-			window.addEventListener("mousedown", stopRotateMilkFace2Mouse);
+
+			if (!isMobile) {
+				window.addEventListener( 'mousemove', rotateMilkFace2Mouse);
+				window.addEventListener("mousedown", stopRotateMilkFace2Mouse);
+			}
 		};
 
 		this.stop = function () {
@@ -200,7 +219,10 @@ function milkFaceScene (object, texture) {
 			cancelAnimationFrame( animationRequest );
 
 			window.removeEventListener( 'resize', setSizeToWindow);
-			window.removeEventListener( 'mousemove', rotateMilkFace2Mouse);
-			window.removeEventListener('mousedown', stopRotateMilkFace2Mouse);
+
+			if (!isMobile){
+				window.removeEventListener( 'mousemove', rotateMilkFace2Mouse);
+				window.removeEventListener('mousedown', stopRotateMilkFace2Mouse);
+			}
 		}
 }
