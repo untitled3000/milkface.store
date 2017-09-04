@@ -31,6 +31,7 @@ function milkFacePlayer () {
                 parent.append( player.dom );
                 player.dom.style.display = "none";
                 $(player.dom).fadeIn(750);
+                $("#buy1").fadeIn(750);
                 setScrolling.execute(true);
             })
         };

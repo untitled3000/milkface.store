@@ -176,6 +176,7 @@ a {
 }
 
 #buy1 {
+    display:none;
     position: absolute;
     bottom: 13%;
     left: calc((100% - 24.38vh)/2);
@@ -194,6 +195,5 @@ a {
 	text-align: center;
 	width: 100%;
 	height: 20px;
-	font-size: 14px;
 	color: #ff00e4;
 }

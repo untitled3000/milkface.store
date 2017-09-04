@@ -103,5 +103,16 @@ function milkFacePhotos (parent) {
 			padding: buyBox2Padding,
 			borderRadius: buyBox2BorderRadius
 		});
+
+		var footer = $(".footer");
+		if ((window.innerHeight * 1280/1525) > window.innerWidth - 130) {
+			footerFontSize = 2.2 * (window.innerWidth - 130) / 100;
+		} else {
+			footerFontSize = 2.2 * (window.innerHeight * 1280/1525) / 100;
+		}
+
+		footer.css({
+			fontSize: footerFontSize
+		});
 	}
 }
