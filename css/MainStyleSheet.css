@@ -48,6 +48,7 @@ a {
 .milkFaceContainer {
     position: absolute;
     top: 0px;
+    pointer-events: none;
 }
 
 /* default fullPage CSS ruls is vertical-align:middle */
