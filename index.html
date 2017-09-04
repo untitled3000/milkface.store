@@ -87,7 +87,18 @@
 
 				var photoGalleryParent = $(".photoGallery");
 				photoGallery = new milkFacePhotos(photoGalleryParent);
+
+				resizeFont();
+				window.addEventListener("resize", resizeFont);
 			});
+
+			function resizeFont () {
+				var buyBox1 = $("#buy1");
+				buyBox1FontSize = 5.27 * window.innerHeight / 100;
+				buyBox1.css({
+					fontSize: buyBox1FontSize
+				});
+			}
 
 			setScrolling = {
 				execute: function (setting) {
@@ -109,6 +120,11 @@
 		<div id="fullpage">
 
 			<div class="section " id="section0">
+				<a href="https://www.etsy.com/listing/529897780/milkface-toy?ref=shop_home_active_1">
+					<div class="roundButton" id="buy1">
+						BUY ME
+					</div>
+				</a>
 			</div>
 
 			<div class="section" id="section1">
@@ -118,7 +134,7 @@
 					</iframe>
 				</div>
 			</div>
-			
+
 			<div class="section" id="section2">
 				<div class="infoContainerHorizontal">
 					<div class="photoGallery"/>
@@ -139,8 +155,8 @@
 						</span>
 						</p>
 						<a href="https://www.etsy.com/listing/529897780/milkface-toy?ref=shop_home_active_1">
-							<div class="roundButton">
-								BUY ME								
+							<div class="roundButton" id="buy2">
+								BUY ME
 							</div>
 						</a>
 					</div>

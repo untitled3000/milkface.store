@@ -175,6 +175,16 @@ a {
 	margin-right: auto;
 }
 
+#buy1 {
+    position: absolute;
+    bottom: 13%;
+    left: calc((100% - 24.38vh)/2);
+    width: 20vh;
+    padding: 2.19vh;
+    border-radius: 2.19vh;
+    line-height: 5.81vh;
+}
+
 .footer {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	right: 0;

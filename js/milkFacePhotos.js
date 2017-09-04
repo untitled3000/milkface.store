@@ -91,19 +91,17 @@ function milkFacePhotos (parent) {
 			fontSize: fontSize
 		});
 
-		var buyBox = $(".roundButton");
-
-		var buyBoxwidth = Math.sqrt(area) / 3.4;
-		var buyBoxFontSize = Math.sqrt(area) / 12.9;
-		var buyBoxLineHeight = Math.sqrt(area) / 11.7 + 'px';
-		var buyBoxPadding = buyBoxBorderRadius = Math.sqrt(area) / 31;
-
-		buyBox.css({
-			width: buyBoxwidth,
-			fontSize: buyBoxFontSize,
-			lineHeight: buyBoxLineHeight,
-			padding: buyBoxPadding,
-			borderRadius: buyBoxBorderRadius
+		var buyBox2 = $("#buy2");
+		var buyBox2width = Math.sqrt(area) / 3.4;
+		var buyBox2FontSize = Math.sqrt(area) / 12.9;
+		var buyBox2LineHeight = Math.sqrt(area) / 11.7 + 'px';
+		var buyBox2Padding = buyBox2BorderRadius = Math.sqrt(area) / 31;
+		buyBox2.css({
+			width: buyBox2width,
+			fontSize: buyBox2FontSize,
+			lineHeight: buyBox2LineHeight,
+			padding: buyBox2Padding,
+			borderRadius: buyBox2BorderRadius
 		});
 	}
 }
