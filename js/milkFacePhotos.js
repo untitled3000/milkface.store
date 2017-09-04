@@ -90,5 +90,20 @@ function milkFacePhotos (parent) {
 		text.css({
 			fontSize: fontSize
 		});
+
+		var buyBox = $(".roundButton");
+
+		var buyBoxwidth = Math.sqrt(area) / 3.4;
+		var buyBoxFontSize = Math.sqrt(area) / 12.9;
+		var buyBoxLineHeight = Math.sqrt(area) / 11.7 + 'px';
+		var buyBoxPadding = buyBoxBorderRadius = Math.sqrt(area) / 31;
+
+		buyBox.css({
+			width: buyBoxwidth,
+			fontSize: buyBoxFontSize,
+			lineHeight: buyBoxLineHeight,
+			padding: buyBoxPadding,
+			borderRadius: buyBoxBorderRadius
+		});
 	}
 }

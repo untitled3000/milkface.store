@@ -6,8 +6,8 @@ body {
     overflow: hidden;
 }
 
-a { 
-    text-decoration: none; 
+a {
+    text-decoration: none;
     color: inherit;
 }
 
@@ -99,7 +99,7 @@ a {
     text-align: justify;
     line-height: 150%;
     vertical-align: middle;
-    margin-top: 35px;
+    margin-top: 6%;
 
 }
 
@@ -163,16 +163,11 @@ a {
 }
 
 .roundButton {
-    padding: 10px 10px; 
     background: #ff00e4;
-    width: 100px;
-    border-radius: 10px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 24px;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: 500;
-	line-height: 26.4px;
 	color: #FFFFFF;
 	font-style: oblique;
 	text-align: center;
