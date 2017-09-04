@@ -10,12 +10,6 @@ function milkFacePlayer () {
             "url" : "objs/milkface.obj",
             "map" : "textures/milkface/ao.png",
             "normalMap" : "textures/milkface/normal.png"
-        },
-        {
-            "name" : "arrow",
-            "url" : "objs/arrow.obj",
-            "map" : "textures/arrow/normal.png",
-            "alphaMap" : "textures/arrow/alpha.png"
         }
     ];
 
@@ -66,7 +60,6 @@ function milkFacePlayer () {
     function loadTexture () {
 
         textures[objURLs[0].name] = newBasicMaterial();
-        textures[objURLs[1].name] = newArrowMaterial();
 
         for (var i = 0; i < objURLs.length; i++) {
 
@@ -103,26 +96,6 @@ function milkFacePlayer () {
             });
 
             return basicMaterial;
-        }
-
-        function newArrowMaterial () {
-            var arrowMatertial = new THREE.MeshStandardMaterial({
-                "color": 15921906,
-                "roughness": 1.0,
-                "metalness": 0.0,
-                "emissive": 0,
-                "map": null,
-                "normalMap": null,
-                "normalScale": null,
-                "envMap": null,
-                "depthFunc": 3,
-                "depthTest": true,
-                "depthWrite": true,
-                "skinning": false,
-                "morphTargets": false
-            });
-
-            return arrowMatertial;
         }
 
         function addEnvMap (){

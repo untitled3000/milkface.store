@@ -1,19 +1,15 @@
 function milkFaceScene (object, texture) {
 
 		var $this = this;
-		var milkFaceObject, arrowObject;
-		var loader;
+		var milkFaceObject;
 		var camera, scene, light, renderer;
 		var width, height;
 		var controls;
 		var mouseX, mouseY;
-		var animationRequest, arrowRotationRequest, arrowFadeRequest;
-		var startTime, fadeTime;
-		var arrowVisible;
+		var animationRequest;
 		var isMobile;
 
 		var defaultMilkfaceRotation = new THREE.Euler(degrees2Rad(-2), degrees2Rad(44), 0);
-		var defaultArrowRotation = new THREE.Euler(degrees2Rad(5), degrees2Rad(0), 0);
 
 		this.dom = document.createElement( 'div' );
 		this.dom.className = "milkFaceContainer";
@@ -33,7 +29,6 @@ function milkFaceScene (object, texture) {
 			setCamera();
 
 			setMilkFace(object.milkface, texture.milkface);
-			setArrow(object.arrow, texture.arrow);
 
 			isMobile = isTouchDevice();
 			if (isMobile) {
@@ -62,16 +57,6 @@ function milkFaceScene (object, texture) {
 			milkFaceObject = object;
 			milkFaceObject.material = texture;
 			scene.add( milkFaceObject );
-		}
-
-		function setArrow ( object, texture ) {
-			arrowObject = object;
-			arrowObject.material = texture;
-			arrowObject.material.transparent = true;
-			arrowObject.position.y = 0.1;
-			scene.add( arrowObject );
-
-			arrowVisible = true;
 		}
 
 		function setRotation (object, angle) {
@@ -115,40 +100,6 @@ function milkFaceScene (object, texture) {
 		function stopRotateMilkFace2Mouse () {
 			if (controls.mouseOverObject) {
 				stopRotate (rotateMilkFace2Mouse, stopRotateMilkFace2Mouse);
-
-				if (arrowVisible){
-					arrowVisible = false;
-					fadeTime = new Date().getTime();
-					cancelAnimationFrame( arrowRotationRequest );
-					arrowFadeRequest = requestAnimationFrame( fadeArrow);
-				}
-			}
-		}
-
-		function rotateArrow () {
-			var timeOffset = (new Date().getTime() - startTime +275) % 1500;
-			if (timeOffset > 1000)
-				setRotation(arrowObject, defaultArrowRotation);
-			else {
-				var yRotation = -360 * Math.sin(timeOffset/1000 * Math.PI/2);
-				setRotation(arrowObject, new THREE.Euler(
-					defaultArrowRotation.x,
-					defaultArrowRotation.y  + degrees2Rad(yRotation),
-					defaultArrowRotation.z)
-				);
-			}
-
-			requestAnimationFrame( rotateArrow);
-		}
-
-		function fadeArrow () {
-			var timeOffset = new Date().getTime() - fadeTime;
-			if (timeOffset > 250) {
-				arrowObject.visible = false;
-				cancelAnimationFrame( arrowFadeRequest );
-			} else {
-				arrowObject.material.opacity = (1 - timeOffset/250);
-				requestAnimationFrame( fadeArrow);
 			}
 		}
 
@@ -194,13 +145,7 @@ function milkFaceScene (object, texture) {
 			$($this.dom).show();
 			controls.play();
 
-			startTime = new Date().getTime();
-
 			animationRequest = requestAnimationFrame( animate );
-
-			if (arrowVisible){
-				arrowRotationRequest = requestAnimationFrame( rotateArrow);
-			}
 
 			window.addEventListener( 'resize', setSizeToWindow);
 
@@ -214,8 +159,6 @@ function milkFaceScene (object, texture) {
 			$($this.dom).hide();
 			controls.stop();
 
-			cancelAnimationFrame( arrowRotationRequest );
-			cancelAnimationFrame( arrowFadeRequest );
 			cancelAnimationFrame( animationRequest );
 
 			window.removeEventListener( 'resize', setSizeToWindow);
