@@ -42,15 +42,6 @@ function milkFacePhotos (parent) {
 		selectedImage.src = photos[0];
 		selectedImage.className = "selectedImage";
 	    selectedSpan.append( selectedImage );
-
-		var selectedParagraph = document.createElement("P");
-		selectedParagraph.innerHTML = "Hover";
-		selectedSpan.append(selectedParagraph);
-
-		var zoomIcon = document.createElement("IMG");
-		zoomIcon.src = "./images/icon.png";
-		zoomIcon.className = "zoomIcon";
-		selectedSpan.append(zoomIcon);
 	}
 
 	function createImageIcons () {
@@ -95,7 +86,7 @@ function milkFacePhotos (parent) {
 	function resizeFont (){
 		var text = $(".photoText");
 		var area = text.width() * text.height();
-		var fontSize = Math.sqrt(area)/28;
+		var fontSize = Math.sqrt(area)/20;
 		text.css({
 			fontSize: fontSize
 		});
