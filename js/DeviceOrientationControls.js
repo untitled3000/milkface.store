@@ -20,11 +20,28 @@ THREE.DeviceOrientationControls = function( object ) {
 	this.alpha = 0;
 	this.alphaOffsetAngle = 0;
 
+	var start = false;
+	var initXRot = 0;
+	var currentXRot = 0;
+	var detlaXRot = 0;
+	var currentYRot = 0;
+
+	var myQuat = new THREE.Quaternion();
 
 	var onDeviceOrientationChangeEvent = function( event ) {
 
 		scope.deviceOrientation = event;
+		
+		currentXRot = scope.deviceOrientation.beta;
+		currentYRot = scope.deviceOrientation.gamma;
+		
+		if (!start)
+		{
+			initXRot = currentXRot; 
+			start = true;
+		}
 
+		detlaXRot = (initXRot - currentXRot);
 	};
 
 	var onScreenOrientationChangeEvent = function() {
@@ -46,6 +63,8 @@ THREE.DeviceOrientationControls = function( object ) {
 		var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
 
 		return function( quaternion, alpha, beta, gamma, orient ) {
+
+			// euler.set(0,scope.deviceOrientation.gamma ,0, 'XYZ' ); // 'ZXY' for the device, but 'YXZ' for us
 
 			euler.set( beta, -gamma, alpha, 'YXZ' ); // 'ZXY' for the device, but 'YXZ' for us
 
@@ -83,13 +102,36 @@ THREE.DeviceOrientationControls = function( object ) {
 
 		if ( scope.enabled === false ) return;
 
-		var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + this.alphaOffsetAngle : 0; // Z
-		var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad( scope.deviceOrientation.beta ) : 0; // X'
-		var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad( scope.deviceOrientation.gamma ) : 0; // Y''
-		var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
+	
+		// var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(90 + (-1*(detlaXRot - detlaXRot/1.5))) : 0; // X'
+		// var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(90 + detlaXRot) : 0; // X'
 
+		// var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad(currentYRot - currentYRot/1.5) : 0; // Y''
+
+		var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + this.alphaOffsetAngle : 0; // Z
+		var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(scope.deviceOrientation.beta) : 0; // X'
+		var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad(scope.deviceOrientation.gamma) : 0; // Y'';
+		var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
+		
 		setObjectQuaternion( scope.object.quaternion, alpha, beta, gamma, orient );
 		this.alpha = alpha;
+
+
+
+
+		myQuat = scope.object.quaternion;
+		var array = [];
+
+		myQuat.toArray(array);
+
+		var quatX = THREE.Math.clamp(array[0],-0.15,0.15);;
+		var quatY = array[1];
+		var quatZ = 0;
+		var quatW = array[3];
+
+		scope.object.quaternion.set (quatX,quatY,quatZ,quatW);
+		scope.object.quaternion.normalize();
+
 
 	};
 
@@ -99,4 +141,8 @@ THREE.DeviceOrientationControls = function( object ) {
 		this.update();
 
 	};
+
 };
+
+
+

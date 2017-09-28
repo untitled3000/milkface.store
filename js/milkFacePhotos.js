@@ -93,7 +93,7 @@ function milkFacePhotos (parent) {
 
 		var buyBox2 = $("#buy2");
 		var buyBox2width = Math.sqrt(area) / 3.4;
-		var buyBox2FontSize = Math.sqrt(area) / 12.9;
+		var buyBox2FontSize = Math.sqrt(area) / 15;
 		var buyBox2LineHeight = Math.sqrt(area) / 11.7 + 'px';
 		var buyBox2Padding = buyBox2BorderRadius = Math.sqrt(area) / 31;
 		buyBox2.css({
