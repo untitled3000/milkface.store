@@ -90,13 +90,28 @@
 
 				resizeFont();
 				window.addEventListener("resize", resizeFont);
+
+				resizeHeader();
+				window.addEventListener("resize", resizeHeader);
 			});
 
 			function resizeFont () {
 				var buyBox1 = $("#buy1");
-				buyBox1FontSize = 5.27 * window.innerHeight / 100;
+				buyBox1FontSize = 5.1 * window.innerHeight / 100;
 				buyBox1.css({
 					fontSize: buyBox1FontSize
+				});
+			}
+
+			function resizeHeader () {
+				var headers = $(".header");
+				if ((window.innerHeight * 1280/1525) > (window.innerWidth - 130)) {
+					var margin = 130/2;
+				} else {
+					var margin = (window.innerWidth - window.innerHeight * 1280/1525) / 2;
+				}
+				headers.css({
+					margin: '0px ' + margin + 'px'
 				});
 			}
 
@@ -128,6 +143,7 @@
 			</div>
 
 			<div class="section" id="section1">
+				<div class="header">Video</div>
 				<div class="infoContainerHorizontal videoContainer">
 					<img class="videoHalftone" src="images/halftone.png" alt="halftone">
 					<iframe class="videoVimeoIframe" src="https://player.vimeo.com/video/219336335?color=ff70c1&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
@@ -136,6 +152,7 @@
 			</div>
 
 			<div class="section" id="section2">
+				<div class="header">Photos</div>
 				<div class="infoContainerHorizontal">
 					<div class="photoGallery"/>
 					</div>

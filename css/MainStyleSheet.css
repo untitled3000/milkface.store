@@ -51,6 +51,13 @@ a {
     pointer-events: none;
 }
 
+.header {
+    position: absolute;
+    top: 0px;
+    width: calc(100vh * 1280/1525);
+    max-width: calc(100vw - 130px);
+}
+
 /* default fullPage CSS ruls is vertical-align:middle */
 /* When height of page is 1525 px, video is 1280 x 720 */
 .infoContainerHorizontal {
