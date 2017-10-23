@@ -5,16 +5,7 @@ function RotationWithQuaternion (object, camera) {
 	var rotateEndPoint = new THREE.Vector3(0, 0, 1);
 
 	var curQuaternion;
-	var windowHalfX = window.innerWidth / 2;
-	var windowHalfY = window.innerHeight / 2;
 	var rotationSpeed = 2;
-	var lastMoveTimestamp = new Date();
-	var moveReleaseTimeDelta = 50;
-
-	var startPoint = {
-		x: 0,
-		y: 0
-	};
 
 	var deltaX = deltaY = 0;
 	var drag = 0.975;
@@ -23,15 +14,19 @@ function RotationWithQuaternion (object, camera) {
 	var request;
 	var raycaster = new THREE.Raycaster();
 	var mouse = new THREE.Vector2(-10,-10); // have cursor default on load
+	var startPoint = new THREE.Vector2(0, 0);
 
 	var $this = this;
 	this.mouseOverObject = false;
+	this.width = window.innerWidth;
+	this.height = window.innerHeight;
 
 	this.play = function () {
 		request = requestAnimationFrame(animate);
 
 		document.addEventListener('mousedown', onDocumentMouseDown, false);
-		document.removeEventListener('resize', onWindowResize, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+
 		document.addEventListener('mousemove', onDocumentMouseMove, false);
 	}
 
@@ -41,13 +36,23 @@ function RotationWithQuaternion (object, camera) {
 		cancelAnimationFrame( request );
 
 		document.removeEventListener('mousedown', onDocumentMouseDown, false);
-		document.removeEventListener( 'resize', onWindowResize, false );
+		document.removeEventListener('touchstart', onDocumentTouchStart, false);
+
 		document.removeEventListener('mousemove', onDocumentMouseMove, false);
 	}
 
-	function onWindowResize(){
-		windowHalfX = window.innerWidth / 2;
-		windowHalfY = window.innerHeight / 2;
+	function getCurrentPosition(event){
+		if (event.touches && event.touches.length > 0){
+			return new THREE.Vector2(
+				event.touches[ 0 ].pageX,
+				event.touches[ 0 ].pageY
+			);
+		}
+
+		return new THREE.Vector2(
+			event.clientX,
+			event.clientY
+		);
 	}
 
 	function onDocumentMouseDown(event){
@@ -55,53 +60,55 @@ function RotationWithQuaternion (object, camera) {
 
 		if ($this.mouseOverObject){
 			document.addEventListener('mousemove', onDocumentMouseMoveIfMouseDown, false);
+			document.addEventListener('touchmove', onDocumentMouseMoveIfMouseDown, false);
 			document.addEventListener('mouseup', onDocumentMouseUp, false);
+			document.addEventListener('touchend', onDocumentMouseUp, false);
 
 			mouseDown = true;
-
-			startPoint = {
-				x: event.clientX,
-				y: event.clientY
-			};
-
+			deltaX /= 15;
+			deltaY /= 15;
+			startPoint = getCurrentPosition(event);
 			rotateStartPoint = rotateEndPoint = projectOnTrackball(0, 0);
 		}
 	}
 
+	function onDocumentTouchStart (event) {
+		onDocumentMouseMove (event);
+		$this.mouseOverObject = getRaycast();
+		onDocumentMouseDown(event);
+	}
+
 	function onDocumentMouseMove (event) {
-		mouse.x =   (( event.clientX / window.innerWidth ) * 2 - 1);
-		mouse.y = - (( event.clientY / window.innerHeight ) * 2 - 1);
+		var currentPosition = getCurrentPosition(event);
+		mouse.x =   (( currentPosition.x / $this.width ) * 2 - 1);
+		mouse.y = - (( currentPosition.y / $this.height ) * 2 - 1);
 	}
 
 	function onDocumentMouseMoveIfMouseDown(event){
-		deltaX = event.x - startPoint.x;
-		deltaY = event.y - startPoint.y;
+		var currentPosition = getCurrentPosition(event);
+
+		deltaX = currentPosition.x - startPoint.x;
+		deltaY = currentPosition.y - startPoint.y;
 
 		handleRotation();
 
-		startPoint.x = event.x;
-		startPoint.y = event.y;
-
-		lastMoveTimestamp = new Date();
+		startPoint = currentPosition;
 	}
 
 	function onDocumentMouseUp(event){
-		if (new Date().getTime() - lastMoveTimestamp.getTime() > moveReleaseTimeDelta){
-			deltaX = event.x - startPoint.x;
-			deltaY = event.y - startPoint.y;
-		}
-
 		mouseDown = false;
 
 		document.removeEventListener('mousemove', onDocumentMouseMoveIfMouseDown, false);
+		document.removeEventListener('touchmove', onDocumentMouseMoveIfMouseDown, false);
 		document.removeEventListener('mouseup', onDocumentMouseUp, false);
+		document.removeEventListener('touchend', onDocumentMouseUp, false);
 	}
 
 	function projectOnTrackball(touchX, touchY){
 		var mouseOnBall = new THREE.Vector3();
 
 		mouseOnBall.set(
-			clamp(touchX / windowHalfX, -1, 1), clamp(-touchY / windowHalfY, -1, 1),
+			clamp(touchX / ($this.width/2), -1, 1), clamp(-touchY / ($this.height/2), -1, 1),
 			0.0
 		);
 

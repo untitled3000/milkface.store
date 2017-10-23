@@ -1,47 +1,26 @@
-/**
- * @author richt / http://richt.me
- * @author WestLangley / http://github.com/WestLangley
- *
- * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
- */
-
-THREE.DeviceOrientationControls = function( object ) {
+function DeviceOrientationControls ( object ) {
 
 	var scope = this;
 
 	this.object = object;
 	this.object.rotation.reorder( "YXZ" );
-
 	this.enabled = true;
 
 	this.deviceOrientation = {};
 	this.screenOrientation = 0;
 
-	this.alpha = 0;
-	this.alphaOffsetAngle = 0;
+	var alphaOffsetAngle = THREE.Math.degToRad(-44);
+	var gyroRequest;
 
-	var start = false;
-	var initXRot = 0;
-	var currentXRot = 0;
-	var detlaXRot = 0;
-	var currentYRot = 0;
+	this.width = window.innerWidth;
+	this.height = window.innerHeight;
 
 	var myQuat = new THREE.Quaternion();
 
 	var onDeviceOrientationChangeEvent = function( event ) {
 
 		scope.deviceOrientation = event;
-		
-		currentXRot = scope.deviceOrientation.beta;
-		currentYRot = scope.deviceOrientation.gamma;
-		
-		if (!start)
-		{
-			initXRot = currentXRot; 
-			start = true;
-		}
 
-		detlaXRot = (initXRot - currentXRot);
 	};
 
 	var onScreenOrientationChangeEvent = function() {
@@ -79,45 +58,29 @@ THREE.DeviceOrientationControls = function( object ) {
 	}();
 
 	this.play = function() {
+		gyroRequest = requestAnimationFrame( animate );
 
 		onScreenOrientationChangeEvent(); // run once on load
 
 		window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
 		window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
-
-		scope.enabled = true;
-
 	};
 
 	this.stop = function() {
+		cancelAnimationFrame( gyroRequest );
 
 		window.removeEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
 		window.removeEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
-
-		scope.enabled = false;
-
 	};
 
-	this.update = function() {
+	var animate = function() {
 
-		if ( scope.enabled === false ) return;
-
-	
-		// var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(90 + (-1*(detlaXRot - detlaXRot/1.5))) : 0; // X'
-		// var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(90 + detlaXRot) : 0; // X'
-
-		// var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad(currentYRot - currentYRot/1.5) : 0; // Y''
-
-		var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + this.alphaOffsetAngle : 0; // Z
+		var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + alphaOffsetAngle : 0; // Z
 		var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad(scope.deviceOrientation.beta) : 0; // X'
 		var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad(scope.deviceOrientation.gamma) : 0; // Y'';
 		var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
-		
+
 		setObjectQuaternion( scope.object.quaternion, alpha, beta, gamma, orient );
-		this.alpha = alpha;
-
-
-
 
 		myQuat = scope.object.quaternion;
 		var array = [];
@@ -132,17 +95,6 @@ THREE.DeviceOrientationControls = function( object ) {
 		scope.object.quaternion.set (quatX,quatY,quatZ,quatW);
 		scope.object.quaternion.normalize();
 
-
+		gyroRequest = requestAnimationFrame( animate );
 	};
-
-	this.updateAlphaOffsetAngle = function( angle ) {
-
-		this.alphaOffsetAngle = angle;
-		this.update();
-
-	};
-
 };
-
-
-
